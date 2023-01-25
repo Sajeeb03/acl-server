@@ -1,7 +1,25 @@
+const { ObjectId } = require("mongodb");
 const { client } = require("../../Configure/dbConnect");
 
 //creating a collection of users
 const Users = client.db('acl').collection("users");
+
+const getUsers = (app) => {
+    app.get("/users", async (req, res) => {
+        try {
+            const result = await Users.find({}).toArray();
+            res.send({
+                success: true,
+                data: result
+            })
+        } catch (error) {
+            res.send({
+                success: false,
+                message: error.message
+            })
+        }
+    })
+}
 
 
 const postUser = (app) => {
@@ -36,4 +54,48 @@ const postUser = (app) => {
 
 
 
-module.exports = { Users, postUser }
+const updateUser = (app) => {
+
+    app.put("/users/:id", async (req, res) => {
+        const { id } = req.params;
+        const filter = { _id: ObjectId(id) };
+        const data = req.body;
+        const update = {
+            $set: { role: data.role }
+        }
+        try {
+            const result = await Users.updateOne(filter, update, { upsert: true });
+            // console.log(result)
+            res.send("updated")
+        } catch (error) {
+            res.send({
+                success: false,
+                message: error.message
+            })
+        }
+    })
+}
+
+
+const deleteUser = (app) => {
+    app.delete("/users", async (req, res) => {
+        const { _id } = req.body;
+        const filter = { _id: ObjectId(_id) }
+
+        try {
+            const user = await Users.deleteOne(filter);
+            res.send({
+                success: true,
+                message: "user deleted"
+            })
+        } catch (error) {
+            res.send({
+                success: false,
+                message: error.message
+            })
+        }
+    })
+}
+
+
+module.exports = { Users, postUser, getUsers, updateUser, deleteUser }

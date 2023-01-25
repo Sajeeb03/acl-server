@@ -5,7 +5,7 @@ const cors = require('cors');
 const { dbConnect } = require('./Configure/dbConnect');
 
 //api
-const { postUser } = require('./API/Users/users');
+const { postUser, getUsers, updateUser, deleteUser } = require('./API/Users/users');
 const { verifyAdmin, verifyManager } = require('./API/Verification/verifyUser');
 
 const app = express();
@@ -18,11 +18,15 @@ app.use(express.json());
 //connecting mongodb to the server
 dbConnect();
 
-
+//getting all users
+getUsers(app);
 // posting user to db
 postUser(app);
+//update users data
+updateUser(app);
 
-
+//deleting a user
+deleteUser(app);
 
 //verify a user is admin or not
 
