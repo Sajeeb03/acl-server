@@ -2,11 +2,13 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+
 const { dbConnect } = require('./Configure/dbConnect');
 
 //api
 const { postUser, getUsers, updateUser, deleteUser } = require('./API/Users/users');
 const { verifyAdmin, verifyManager } = require('./API/Verification/verifyUser');
+const { getToken } = require('./API/JWT/getJwtToken');
 
 const app = express();
 const port = process.env.PORT;
@@ -17,6 +19,10 @@ app.use(express.json());
 
 //connecting mongodb to the server
 dbConnect();
+
+
+//getting json web token
+getToken(app);
 
 //getting all users
 getUsers(app);
