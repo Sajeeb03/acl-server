@@ -19,4 +19,4 @@ const getToken = app => {
 }
 
 
-module.exports = { getToken }
+module.exports = { getToken, jwt }

@@ -1,5 +1,7 @@
 const { ObjectId } = require("mongodb");
 const { client } = require("../../Configure/dbConnect");
+const { verifyJWT } = require("../../MiddleWares/middleWares");
+
 
 //creating a collection of users
 const Users = client.db('acl').collection("users");
@@ -78,9 +80,9 @@ const updateUser = (app) => {
 
 
 const deleteUser = (app) => {
-    app.delete("/users", async (req, res) => {
-        const { _id } = req.body;
-        const filter = { _id: ObjectId(_id) }
+    app.delete("/user/:id", async (req, res) => {
+        const { id } = req.params;
+        const filter = { _id: ObjectId(id) }
 
         try {
             const user = await Users.deleteOne(filter);

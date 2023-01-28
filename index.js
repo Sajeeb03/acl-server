@@ -1,20 +1,22 @@
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-
 const { dbConnect } = require('./Configure/dbConnect');
 
 //api
 const { postUser, getUsers, updateUser, deleteUser } = require('./API/Users/users');
 const { verifyAdmin, verifyManager } = require('./API/Verification/verifyUser');
 const { getToken } = require('./API/JWT/getJwtToken');
+const { verifyJWT } = require('./MiddleWares/middleWares');
 
 const app = express();
 const port = process.env.PORT;
 
 //middle wares
 app.use(cors());
+app.use(cookieParser())
 app.use(express.json());
 
 //connecting mongodb to the server
@@ -43,8 +45,9 @@ verifyAdmin(app)
 verifyManager(app)
 
 //primary api
-app.get("/", (req, res) => {
+app.get("/", verifyJWT, (req, res) => {
     res.send("Server is running");
+    console.log("coockies:", req.cookies.accessToken)
 })
 
 //listening the port 
