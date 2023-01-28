@@ -7,7 +7,7 @@ const { verifyJWT } = require("../../MiddleWares/middleWares");
 const Users = client.db('acl').collection("users");
 
 const getUsers = (app) => {
-    app.get("/users", async (req, res) => {
+    app.get("/users", verifyJWT, async (req, res) => {
         try {
             const result = await Users.find({}).toArray();
             res.send({

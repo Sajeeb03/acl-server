@@ -1,4 +1,3 @@
-const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const express = require('express');
@@ -16,7 +15,6 @@ const port = process.env.PORT;
 
 //middle wares
 app.use(cors());
-app.use(cookieParser())
 app.use(express.json());
 
 //connecting mongodb to the server
@@ -45,9 +43,8 @@ verifyAdmin(app)
 verifyManager(app)
 
 //primary api
-app.get("/", verifyJWT, (req, res) => {
+app.get("/", (req, res) => {
     res.send("Server is running");
-    console.log("coockies:", req.cookies.accessToken)
 })
 
 //listening the port 
