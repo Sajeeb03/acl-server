@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 
 const { dbConnect, client } = require('./Configure/dbConnect');
-// const acl = require('express-acl');
+
 
 //api
 const { postUser, getUsers, updateUser, deleteUser } = require('./API/Users/users');
@@ -24,44 +24,10 @@ app.use(express.json());
 //connecting mongodb to the server
 dbConnect();
 const Users = client.db('acl').collection("users");
-// acl.config({
-//     baseUrl: '/',
-//     filename: "nacl.json",
-//     path: "Configure",
-//     defaultRole: "guest",
-//     decodedObjectName: 'user',
-//     roleSearchPath: 'user.role',
-//     denyCallback: (res) => res.status(401).send('Unauthorized'),
-// });
-
-// const authorized = (req, res, next) => {
-//     // Get the user's role from the req.session object
-//     // const userEmail = req.decoded.email;
-//     // const findUser = await Users.findOne({ email: userEmail });
-//     // const userRole = "admin";
-
-//     // console.log(userRole)
-
-//     acl.authorize("admin", "/admin", "*", (allowed) => {
-//         if (allowed) {
-//             console.log("allowed")
-//             next();
-//         } else {
-//             console.log("not allowed")
-//             res.status(401).send("Unauthorized");
-//         }
-//     });
-// }
-
-
-
-
-
-
 
 //getting json web token
 
-getToken(app, Users);
+getToken(app);
 
 //getting all users
 getUsers(app);
