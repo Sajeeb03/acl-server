@@ -80,7 +80,7 @@ const updateUser = (app) => {
 
 
 const deleteUser = (app) => {
-    app.delete("/user/:id", async (req, res) => {
+    app.delete("/users/user/:id", async (req, res) => {
         const { id } = req.params;
         const filter = { _id: ObjectId(id) }
 

@@ -1,0 +1,30 @@
+[
+    {
+        "group": "admin",
+        "permissions": [
+            {
+                "resource": "*",
+                "methods": [
+                    "POST",
+                    "GET",
+                    "PUT"
+                ],
+                "action": "allow"
+            }
+        ]
+    },
+    {
+        "group": "guest",
+        "permissions": [
+            {
+                "resource": "*",
+                "methods": [
+                    "POST",
+                    "GET",
+                    "PUT"
+                ],
+                "action": "allow"
+            }
+        ]
+    }
+]

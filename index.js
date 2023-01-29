@@ -2,7 +2,9 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const { dbConnect } = require('./Configure/dbConnect');
+
+const { dbConnect, client } = require('./Configure/dbConnect');
+// const acl = require('express-acl');
 
 //api
 const { postUser, getUsers, updateUser, deleteUser } = require('./API/Users/users');
@@ -10,8 +12,10 @@ const { verifyAdmin, verifyManager } = require('./API/Verification/verifyUser');
 const { getToken } = require('./API/JWT/getJwtToken');
 const { verifyJWT } = require('./MiddleWares/middleWares');
 
+
 const app = express();
 const port = process.env.PORT;
+
 
 //middle wares
 app.use(cors());
@@ -19,10 +23,45 @@ app.use(express.json());
 
 //connecting mongodb to the server
 dbConnect();
+const Users = client.db('acl').collection("users");
+// acl.config({
+//     baseUrl: '/',
+//     filename: "nacl.json",
+//     path: "Configure",
+//     defaultRole: "guest",
+//     decodedObjectName: 'user',
+//     roleSearchPath: 'user.role',
+//     denyCallback: (res) => res.status(401).send('Unauthorized'),
+// });
+
+// const authorized = (req, res, next) => {
+//     // Get the user's role from the req.session object
+//     // const userEmail = req.decoded.email;
+//     // const findUser = await Users.findOne({ email: userEmail });
+//     // const userRole = "admin";
+
+//     // console.log(userRole)
+
+//     acl.authorize("admin", "/admin", "*", (allowed) => {
+//         if (allowed) {
+//             console.log("allowed")
+//             next();
+//         } else {
+//             console.log("not allowed")
+//             res.status(401).send("Unauthorized");
+//         }
+//     });
+// }
+
+
+
+
+
 
 
 //getting json web token
-getToken(app);
+
+getToken(app, Users);
 
 //getting all users
 getUsers(app);
@@ -42,10 +81,18 @@ verifyAdmin(app)
 
 verifyManager(app)
 
+
+
 //primary api
 app.get("/", (req, res) => {
     res.send("Server is running");
 })
 
+app.get("/admin", verifyJWT, (req, res) => {
+    res.send("hello from there")
+});
+
 //listening the port 
 app.listen(port, () => console.log(`Server is running at ${port}`))
+
+

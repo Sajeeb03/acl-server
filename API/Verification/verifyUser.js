@@ -2,15 +2,17 @@ const { Users } = require("../Users/users");
 
 const verifyAdmin = (app) => {
 
-    app.get('/users', async (req, res) => {
+    app.get('/user/:email', async (req, res) => {
         try {
-            const { email } = req.query;
+            const { email } = req.params;
             const query = { email: email }
-
+//find the user
             const user = await Users.findOne(query);
+
             if (user.role === "admin") {
                 res.send(true)
             }
+
             else {
                 res.send(false)
             }

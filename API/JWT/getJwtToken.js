@@ -1,14 +1,15 @@
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
-const getToken = app => {
+const getToken = (app) => {
     app.get("/jwt", async (req, res) => {
         try {
-            const email = req.query;
-            const token = jwt.sign(email, process.env.SECRET_KEY, { expiresIn: "10d" });
+            const { email } = req.query;
+            const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "10d" });
             res.send({
                 success: true,
                 data: token
             })
+
         } catch (error) {
             res.send({
                 success: false,

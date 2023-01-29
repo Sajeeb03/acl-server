@@ -1,5 +1,7 @@
 const { jwt } = require("../API/JWT/getJwtToken");
 
+
+
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -16,5 +18,8 @@ const verifyJWT = (req, res, next) => {
         next();
     })
 }
+
+
+
 
 module.exports = { verifyJWT }
