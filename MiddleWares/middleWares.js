@@ -2,6 +2,9 @@ const { jwt } = require("../API/JWT/getJwtToken");
 const { client } = require("../Configure/dbConnect");
 const Users = client.db('acl').collection("users");
 const Permissions = client.db("acl").collection("permissions");
+const jwtPermission = require('express-jwt-permissions')
+const guard = jwtPermission();
+
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -30,6 +33,7 @@ const checkPermission = async (req, res, next) => {
     const allowed = result.allowed;
 
     if (allowed.includes(role)) {
+        req.user.role = role;
         next();
     }
     else {
@@ -37,7 +41,34 @@ const checkPermission = async (req, res, next) => {
     }
 }
 
+const checkAcess = async (req, res, next) => {
+    const role = req.user.role;
+
+    // const requiredPermission = req.query.permission || 'manager:read';
+    const requiredPermission = `admin:read`
+    console.log(requiredPermission)
+    const check = async () => {
+
+        try {
+            const middleware = guard.check([requiredPermission]);
+            middleware(req, res, next);
+
+        } catch (err) {
+            // handle error
+            res.status(401).send('Unauthorized 12');
+            return false;
+        }
+
+    };
+    const hasPermission = await check();
+    if (!hasPermission) {
+        res.status(401).send('Unauthorized hello');
+    }
+
+};
 
 
 
-module.exports = { verifyJWT, checkPermission }
+
+
+module.exports = { verifyJWT, checkPermission, checkAcess }
