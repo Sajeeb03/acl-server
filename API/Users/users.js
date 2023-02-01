@@ -61,7 +61,9 @@ const updateUser = (app) => {
     app.put("/users/:id", verifyJWT, checkPermission, checkAcess('update'), async (req, res) => {
         const { id } = req.params;
         const filter = { _id: ObjectId(id) };
+
         const data = req.body;
+
         const update = {
             $set: { role: data.role }
         }
@@ -81,6 +83,7 @@ const updateUser = (app) => {
 
 const deleteUser = (app) => {
     app.delete("/users/user/:id", verifyJWT, checkPermission, checkAcess('delete'), async (req, res) => {
+
         const { id } = req.params;
         const filter = { _id: ObjectId(id) }
 
@@ -100,4 +103,4 @@ const deleteUser = (app) => {
 }
 
 
-module.exports = { Users, postUser, getUsers, updateUser, deleteUser }
+module.exports = { postUser, getUsers, updateUser, deleteUser }
