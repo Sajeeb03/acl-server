@@ -11,6 +11,7 @@ const Permissions = client.db("acl").collection("permissions");
 
 
 
+//verify the jwt token
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -19,12 +20,16 @@ const verifyJWT = (req, res, next) => {
         return res.status(401).send({ message: "Unauthorized Access" })
     }
     const token = authHeader.split(' ')[1];
+
+    //adding algorithm for guard.check
     const algorithm = 'HS256';
 
     try {
+
         const decoded = jwt.verify(token, process.env.SECRET_KEY, { algorithms: [algorithm] });
         req.user = decoded;
         next();
+
     } catch (error) {
         res.status(401).json({ message: 'Unauthorized' });
     }
