@@ -28,7 +28,7 @@ const verifyJWT = (req, res, next) => {
 const checkPermission = async (req, res, next) => {
     const email = req.user.email;
     const user = await Users.findOne({ email });
-    const role = user.role;
+    const role = user?.role;
     const result = await Permissions.findOne({})
     const allowed = result.allowed;
 

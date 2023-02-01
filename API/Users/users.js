@@ -7,7 +7,7 @@ const { verifyJWT, checkPermission, checkAcess } = require("../../MiddleWares/mi
 const Users = client.db('acl').collection("users");
 
 const getUsers = (app) => {
-    app.get("/users", verifyJWT, async (req, res) => {
+    app.get("/users", verifyJWT, checkPermission, checkAcess('read'), async (req, res) => {
         try {
             const result = await Users.find({}).toArray();
             res.send({
@@ -58,7 +58,7 @@ const postUser = (app) => {
 
 const updateUser = (app) => {
 
-    app.put("/users/:id", async (req, res) => {
+    app.put("/users/:id", verifyJWT, checkPermission, checkAcess('update'), async (req, res) => {
         const { id } = req.params;
         const filter = { _id: ObjectId(id) };
         const data = req.body;
