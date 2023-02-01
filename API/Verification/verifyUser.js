@@ -1,4 +1,7 @@
-const { Users } = require("../Users/users");
+const { client } = require("../../Configure/dbConnect");
+
+//creating a collection of users
+const Users = client.db('acl').collection("users");
 
 const verifyAdmin = (app) => {
 
@@ -6,7 +9,7 @@ const verifyAdmin = (app) => {
         try {
             const { email } = req.params;
             const query = { email: email }
-//find the user
+            //find the user
             const user = await Users.findOne(query);
 
             if (user.role === "admin") {
