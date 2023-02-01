@@ -41,34 +41,20 @@ const checkPermission = async (req, res, next) => {
     }
 }
 
-const checkAcess = async (req, res, next) => {
+const checkAcess = (action) => async (req, res, next) => {
     const role = req.user.role;
+    const requiredPermission = `${role}:${action}`
 
-    // const requiredPermission = req.query.permission || 'manager:read';
-    const requiredPermission = `admin:read`
-    console.log(requiredPermission)
-    const check = async () => {
+    try {
+        const middleware = guard.check([requiredPermission]);
+        middleware(req, res, next);
 
-        try {
-            const middleware = guard.check([requiredPermission]);
-            middleware(req, res, next);
-
-        } catch (err) {
-            // handle error
-            res.status(401).send('Unauthorized 12');
-            return false;
-        }
-
-    };
-    const hasPermission = await check();
-    if (!hasPermission) {
-        res.status(401).send('Unauthorized hello');
+    } catch (err) {
+        // handle error
+        res.status(401).send('Unauthorized');
+        return false;
     }
-
 };
-
-
-
 
 
 module.exports = { verifyJWT, checkPermission, checkAcess }

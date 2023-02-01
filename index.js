@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const jwtPermission = require('express-jwt-permissions')
 const { dbConnect, client } = require('./Configure/dbConnect');
 
 
@@ -16,7 +17,15 @@ const { postPermissions, getPermissions, allowPermission, allowActions } = requi
 
 const app = express();
 const port = process.env.PORT;
+const guard = jwtPermission();
 
+
+app.use(function (err, req, res, next) {
+
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).send('invalid token...');
+    }
+})
 
 //middle wares
 app.use(cors());
@@ -73,7 +82,17 @@ app.get("/", (req, res) => {
 })
 
 
-app.get("/admin", verifyJWT, checkPermission, checkAcess, async (req, res) => {
+
+
+
+
+
+
+
+
+
+
+app.get("/admin", verifyJWT, checkPermission, checkAcess('delete'), async (req, res) => {
     try {
         res.send("hello from there")
     } catch (error) {

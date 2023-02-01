@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { client } = require("../../Configure/dbConnect");
-const { verifyJWT } = require("../../MiddleWares/middleWares");
+const { verifyJWT, checkPermission, checkAcess } = require("../../MiddleWares/middleWares");
 
 
 //creating a collection of users
@@ -80,7 +80,7 @@ const updateUser = (app) => {
 
 
 const deleteUser = (app) => {
-    app.delete("/users/user/:id", async (req, res) => {
+    app.delete("/users/user/:id", verifyJWT, checkPermission, checkAcess('delete'), async (req, res) => {
         const { id } = req.params;
         const filter = { _id: ObjectId(id) }
 
